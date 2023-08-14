@@ -39,19 +39,19 @@ const MusicShaderBlob = () => {
       },
       eqcolor: {
         type: "f",
-        value: 0.0,
+        value: 12.14,
       },
       rcolor: {
         type: "f",
-        value: 0.0,
+        value: 2.5,
       },
       gcolor: {
         type: "f",
-        value: 0.0,
+        value: 1.09,
       },
       bcolor: {
         type: "f",
-        value: 0.0,
+        value: 4.4,
       },
       fragment: {
         type: "i",
@@ -84,7 +84,7 @@ const MusicShaderBlob = () => {
       max: 1,
     },
     decay: {
-      value: 0.3,
+      value: 0.4,
       step: 0.01,
       min: 0,
       max: 1,
@@ -96,46 +96,46 @@ const MusicShaderBlob = () => {
       max: 3,
     },
     displace: {
-      value: 0.5,
+      value: 1.55,
       step: 0.01,
       min: 0,
       max: 3,
     },
     complex: {
-      value: 0.65,
+      value: 1.95,
       step: 0.01,
       min: 0,
       max: 3,
     },
     waves: {
-      value: 3,
+      value: 0,
       step: 0.01,
       min: 0,
       max: 20,
     },
     eqcolor: {
-      value: 9.5,
+      value: 6.48,
       step: 0.01,
       min: 0,
       max: 30,
     },
     rcolor: {
-      value: 1.5,
+      value: 2.5,
       step: 0.01,
       min: 0,
       max: 2.5,
     },
     gcolor: {
-      value: 1.5,
+      value: 1.09,
       step: 0.01,
       min: 0,
-      max: 2.5,
+      max: 5,
     },
     bcolor: {
-      value: 1.5,
+      value: 4.4,
       step: 0.01,
       min: 0,
-      max: 2.5,
+      max: 5,
     },
   });
 
@@ -191,9 +191,9 @@ const MusicShaderBlob = () => {
   return (
     <mesh
       ref={mesh}
-      position={[1.3, 0.9, 0]}
+      position={[0, 0, 0]}
       rotation={[-Math.PI, 0, 0]}
-      scale={0.35}
+      scale={0.5}
     >
       <sphereGeometry args={[1, 48, 48]} />
       <shaderMaterial
@@ -417,14 +417,14 @@ void main() {
   vUv = uv;
 
   noise = (2.0 *  - waves) * turbulence( decay * abs(normal + time));
-  qnoise = (0.3 *  - eqcolor) * turbulence( decay * abs(normal + time));
+  qnoise = (0.1 *  - eqcolor) * turbulence( decay * abs(normal + time));
   float b = pnoise( complex * (position) + vec3( (decay * 2.0) * time ), vec3( 100.0 ) );
   
   displacement = - atan(noise) + tan(b * displace);
 
   vec3 newPosition = (position) + (normal * displacement);
   gl_Position = (projectionMatrix * modelViewMatrix) * vec4( newPosition, abs(size) );
-  gl_PointSize = (3.0);
+  gl_PointSize = (1.0);
 }
 `;
 
@@ -440,17 +440,12 @@ uniform float bcolor;
 
 void main() {
   float r, g, b;
+  r = sin(qnoise + rcolor);
+  g = cos(qnoise + gcolor);
+  b = tan(qnoise + bcolor);
+  gl_FragColor = vec4(r, g, b , 0.3);
   
-  if (!redhell == true) {
-    r = sin(qnoise + rcolor);
-    g = normalize(qnoise + (gcolor / 2.0));
-    b = tan(qnoise + bcolor);
-  } else {
-    r = normalize(qnoise + rcolor);
-    g = cos(qnoise + gcolor);
-    b = sin(qnoise + bcolor);
-  }
-  gl_FragColor = vec4(r, g, b, 1.0);
+  
+  gl_FragColor = vec4(114.0 / 255.0 * (r * 0.5), 153.0 / 255.0 * g , 208.0 / 255.0 * b, 0.4);
 }
-
 `;
