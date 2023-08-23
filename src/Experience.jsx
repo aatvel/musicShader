@@ -3,6 +3,7 @@ import { useControls, button } from "leva";
 import { Perf } from "r3f-perf";
 import MusicShaderBlob from "./MusicShaderBlob";
 import MusicShaderFlower from "./MusicShaderFlower";
+import WobblingSphere from "./WobblingSphere";
 
 
 export default function Experience() {
@@ -19,8 +20,9 @@ export default function Experience() {
       <directionalLight position={[1, 2, 3]} intensity={1.5} />
       <ambientLight intensity={0.5} />
 
-      <MusicShaderBlob />
+      {/* <MusicShaderBlob /> */}
       {/* <MusicShaderFlower /> */}
+      <WobblingSphere />
      
     </>
   );
