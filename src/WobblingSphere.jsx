@@ -8,6 +8,7 @@ import {
 import { useFrame } from "@react-three/fiber";
 import { a } from "@react-spring/three";
 import { useControls } from "leva";
+import { gsap } from "gsap";
 
 const AnimatedMaterial = a(MeshDistortMaterial);
 
@@ -18,11 +19,30 @@ const WobblingSphere = () => {
     x: 0,
     y: 0,
   };
+  const [isHovered, setIsHovered] = useState(false);
 
   React.useEffect(() => {
     window.addEventListener("mousemove", (event) => {
       mouse.x = (event.clientX / window.innerWidth) * 2 - 1;
       mouse.y = -(event.clientY / window.innerHeight) * 2 + 1;
+
+      if (Math.abs(mouse.x) < 0.18 && Math.abs(mouse.y) < 0.18) {
+        gsap.to(matRef.current.color, {
+          r: 0,
+          g: 0.85,
+          b: 0.4,
+          duration: 2,
+          ease: "circ.out",
+        });
+      } else {
+        gsap.to(matRef.current.color, {
+          r: 0.15,
+          g: 0.99,
+          b: 0.54,
+          duration: 2,
+          ease: "circ.out",
+        });
+      }
     });
   }, []);
 
@@ -61,7 +81,7 @@ const WobblingSphere = () => {
       max: 2,
     },
     distort: {
-      value: 1.2,
+      value: 1.38,
       step: 0.01,
       min: 0,
       max: 5,
@@ -89,10 +109,14 @@ const WobblingSphere = () => {
     }
 
     if (mouse.x && mouse.y && matRef) {
-      matRef.current.distort = distort - Math.abs(mouse.x * 0.7);
+      gsap.to(matRef.current, {
+        distort: distort - Math.abs(mouse.x * 0.5),
+        duration: 1.5,
+        ease: "circ.out",
+      });
 
-      sphere.current.rotation.x = 0 - mouse.y * 0.3;
-      sphere.current.rotation.y = 0 + mouse.x * 0.5;
+      sphere.current.rotation.x = 0 + mouse.y * 0.3;
+      sphere.current.rotation.y = 0 - mouse.x * 0.5;
     }
   });
 
@@ -100,10 +124,10 @@ const WobblingSphere = () => {
     <>
       <Suspense fallback={null}>
         <a.mesh ref={sphere} scale={0.4}>
-          <sphereBufferGeometry args={[1, 64, 64]} />
+          <sphereGeometry args={[1, 128, 128]} />
           <AnimatedMaterial
             ref={matRef}
-            color={color}
+            color={"#1EFFA5"}
             envMapIntensity={envMapIntensity}
             clearcoat={clearcoat}
             clearcoatRoughness={clearcoatRoughness}
